@@ -18,4 +18,4 @@ At the moment it's best to check the tests, however, more examples are coming in
 
 # Warning 
 
-Homomorphine-Go is currently not intendend for production use.
+Homomorphine-Go is currently not ready for production use.
