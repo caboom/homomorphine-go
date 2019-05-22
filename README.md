@@ -5,7 +5,7 @@ Homomorphine-Go is a Golang interface for [Homomorphine](https://github.com/cabo
 You have to previously install [Homomorphine](https://github.com/caboom/homomorphine-go) and relevant homomorphic libraries you intend to use (SEAL, HELib, etc.)
 
 You can install Homomorphine-Go  package with:
-```
+``` shell
 make all
 make install
 ```
