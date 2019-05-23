@@ -2,6 +2,8 @@ package homomorphine
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestHomomorphine(t *testing.T) {
@@ -23,7 +25,5 @@ func TestHomomorphine(t *testing.T) {
 
 	homomorphine.SetCipher(homomorphineEncrypt.GetCipher())
 
-	if homomorphine.Decrypt() != 200200 {
-		t.Errorf("Incorrect results of numerical operations: %d", homomorphine.Decrypt())
-	}
+	assert.Equal(t, homomorphine.Decrypt(), 200200, "Incorrect results of numerical operations: %d", homomorphine.Decrypt())
 }
