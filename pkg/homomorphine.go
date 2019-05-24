@@ -5,7 +5,10 @@ package homomorphine
 // #include <stdio.h>
 // #include <stdlib.h>
 // #include <homomorphine/clang_backend_interface.hpp>
-import "C"
+import (
+	"C"
+)
+import "unsafe"
 
 type Homomorphine struct {
 	backend C.BackendWrapper
@@ -26,15 +29,28 @@ func (b Homomorphine) Init() {
 }
 
 func (b Homomorphine) SetAlgorithm(algorithm string) {
-	C.SetBackendAlgorithm(b.backend, C.CString(algorithm))
+	csAlgorithm := C.CString(algorithm)
+	defer C.free(unsafe.Pointer(csAlgorithm))
+
+	C.SetBackendAlgorithm(b.backend, csAlgorithm)
 }
 
 func (b Homomorphine) GetParam(key string) string {
-	return C.GoString(C.GetBackendParam(b.backend, C.CString(key)))
+	csKey := C.CString(key)
+	defer C.free(unsafe.Pointer(csKey))
+
+	csParam := C.GetBackendParam(b.backend, csKey)
+	defer C.free(unsafe.Pointer(csParam))
+	return C.GoString(csParam)
 }
 
 func (b Homomorphine) SetParam(key string, value string) {
-	C.SetBackendParam(b.backend, C.CString(key), C.CString(value))
+	csKey := C.CString(key)
+	defer C.free(unsafe.Pointer(csKey))
+	csValue := C.CString(value)
+	defer C.free(unsafe.Pointer(csValue))
+
+	C.SetBackendParam(b.backend, csKey, csValue)
 }
 
 func (b Homomorphine) GenerateKeys() {
@@ -42,31 +58,52 @@ func (b Homomorphine) GenerateKeys() {
 }
 
 func (b Homomorphine) GetPublicKey() string {
-	return C.GoString(C.GetBackendPublicKey(b.backend))
+	csPublicKey := C.GetBackendPublicKey(b.backend)
+	defer C.free(unsafe.Pointer(csPublicKey))
+
+	return C.GoString(csPublicKey)
 }
 
 func (b Homomorphine) GetSecretKey() string {
-	return C.GoString(C.GetBackendSecretKey(b.backend))
+	csSecretKey := C.GetBackendSecretKey(b.backend)
+	defer C.free(unsafe.Pointer(csSecretKey))
+
+	return C.GoString(csSecretKey)
 }
 
 func (b Homomorphine) SetPublicKey(publicKey string) {
-	C.SetBackendPublicKey(b.backend, C.CString(publicKey))
+	csPublicKey := C.CString(publicKey)
+	defer C.free(unsafe.Pointer(csPublicKey))
+
+	C.SetBackendPublicKey(b.backend, csPublicKey)
 }
 
 func (b Homomorphine) SetSecretKey(secretKey string) {
-	C.SetBackendSecretKey(b.backend, C.CString(secretKey))
+	csSecretKey := C.CString(secretKey)
+	defer C.free(unsafe.Pointer(csSecretKey))
+
+	C.SetBackendSecretKey(b.backend, csSecretKey)
 }
 
 func (b Homomorphine) GetCipher() string {
-	return C.GoString(C.GetBackendCipher(b.backend))
+	csCipher := C.GetBackendCipher(b.backend)
+	defer C.free(unsafe.Pointer(csCipher))
+
+	return C.GoString(csCipher)
 }
 
 func (b Homomorphine) SetCipher(cipher string) {
-	C.SetBackendCipher(b.backend, C.CString(cipher))
+	csCipher := C.CString(cipher)
+	defer C.free(unsafe.Pointer(csCipher))
+
+	C.SetBackendCipher(b.backend, csCipher)
 }
 
 func (b Homomorphine) Encrypt(value int) string {
-	return C.GoString(C.BackendEncrypt(b.backend, C.long(value)))
+	csCipher := C.BackendEncrypt(b.backend, C.long(value))
+	defer C.free(unsafe.Pointer(csCipher))
+
+	return C.GoString(csCipher)
 }
 
 func (b Homomorphine) Decrypt() int {
