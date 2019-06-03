@@ -99,11 +99,8 @@ func (b ArithmeticBackend) SetCipher(cipher string) {
 	C.SetArithmeticBackendCipher(b.backend, csCipher)
 }
 
-func (b ArithmeticBackend) Encrypt(value int) string {
-	csCipher := C.ArithmeticBackendEncrypt(b.backend, C.long(value))
-	defer C.free(unsafe.Pointer(csCipher))
-
-	return C.GoString(csCipher)
+func (b ArithmeticBackend) Encrypt(value int) {
+	C.ArithmeticBackendEncrypt(b.backend, C.long(value))
 }
 
 func (b ArithmeticBackend) Decrypt() int {
