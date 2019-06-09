@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestHomomorphine(t *testing.T) {
+func TestArithmeticBackend(t *testing.T) {
 	backend := CreateArithmeticHomomorphineBackend("seal")
 	backend.SetAlgorithm("bfv")
 	backend.Init()

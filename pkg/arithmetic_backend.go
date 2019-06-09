@@ -9,14 +9,7 @@ package homomorphine
 import (
 	"C"
 )
-import (
-	"unsafe"
-)
-
-type bytes struct {
-	content []byte
-	size    int64
-}
+import "unsafe"
 
 type ArithmeticBackend struct {
 	backend C.ArithmeticBackendWrapper
