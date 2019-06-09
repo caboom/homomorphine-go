@@ -4,11 +4,19 @@ package homomorphine
 // #cgo LDFLAGS: -lhomomorphine
 // #include <stdio.h>
 // #include <stdlib.h>
+// #include <homomorphine/clang_types.hpp>
 // #include <homomorphine/clang_arithmetic_backend_interface.hpp>
 import (
 	"C"
 )
-import "unsafe"
+import (
+	"unsafe"
+)
+
+type bytes struct {
+	content []byte
+	size    int64
+}
 
 type ArithmeticBackend struct {
 	backend C.ArithmeticBackendWrapper
@@ -57,46 +65,49 @@ func (b ArithmeticBackend) GenerateKeys() {
 	C.GenerateArithmeticBackendKeys(b.backend)
 }
 
-func (b ArithmeticBackend) GetPublicKey() string {
+func (b ArithmeticBackend) GetPublicKey() bytes {
+	var publicKey bytes
 	csPublicKey := C.GetArithmeticBackendPublicKey(b.backend)
-	defer C.free(unsafe.Pointer(csPublicKey))
+	defer C.free(unsafe.Pointer(csPublicKey.content))
 
-	return C.GoString(csPublicKey)
+	publicKey.size = int64(csPublicKey.size)
+	publicKey.content = C.GoBytes(unsafe.Pointer(csPublicKey.content), C.int(int(csPublicKey.size)))
+
+	return publicKey
 }
 
-func (b ArithmeticBackend) GetSecretKey() string {
+func (b ArithmeticBackend) GetSecretKey() bytes {
+	var secretKey bytes
 	csSecretKey := C.GetArithmeticBackendSecretKey(b.backend)
-	defer C.free(unsafe.Pointer(csSecretKey))
+	defer C.free(unsafe.Pointer(csSecretKey.content))
 
-	return C.GoString(csSecretKey)
+	secretKey.size = int64(csSecretKey.size)
+	secretKey.content = C.GoBytes(unsafe.Pointer(csSecretKey.content), C.int(int(csSecretKey.size)))
+
+	return secretKey
 }
 
-func (b ArithmeticBackend) SetPublicKey(publicKey string) {
-	csPublicKey := C.CString(publicKey)
-	defer C.free(unsafe.Pointer(csPublicKey))
-
-	C.SetArithmeticBackendPublicKey(b.backend, csPublicKey)
+func (b ArithmeticBackend) SetPublicKey(publicKey bytes) {
+	C.SetArithmeticBackendPublicKey(b.backend, *((*C.struct_byte_array_t)(unsafe.Pointer(&publicKey))))
 }
 
-func (b ArithmeticBackend) SetSecretKey(secretKey string) {
-	csSecretKey := C.CString(secretKey)
-	defer C.free(unsafe.Pointer(csSecretKey))
-
-	C.SetArithmeticBackendSecretKey(b.backend, csSecretKey)
+func (b ArithmeticBackend) SetSecretKey(secretKey bytes) {
+	C.SetArithmeticBackendPublicKey(b.backend, *((*C.struct_byte_array_t)(unsafe.Pointer(&secretKey))))
 }
 
-func (b ArithmeticBackend) GetCipher() string {
+func (b ArithmeticBackend) GetCipher() bytes {
+	var cipher bytes
 	csCipher := C.GetArithmeticBackendCipher(b.backend)
-	defer C.free(unsafe.Pointer(csCipher))
+	defer C.free(unsafe.Pointer(csCipher.content))
 
-	return C.GoString(csCipher)
+	cipher.size = int64(csCipher.size)
+	cipher.content = C.GoBytes(unsafe.Pointer(csCipher.content), C.int(int(csCipher.size)))
+
+	return cipher
 }
 
-func (b ArithmeticBackend) SetCipher(cipher string) {
-	csCipher := C.CString(cipher)
-	defer C.free(unsafe.Pointer(csCipher))
-
-	C.SetArithmeticBackendCipher(b.backend, csCipher)
+func (b ArithmeticBackend) SetCipher(cipher bytes) {
+	C.SetArithmeticBackendCipher(b.backend, *((*C.struct_byte_array_t)(unsafe.Pointer(&cipher))))
 }
 
 func (b ArithmeticBackend) Encrypt(value int) {

@@ -19,6 +19,7 @@ func TestHomomorphine(t *testing.T) {
 	backend.Encrypt(10000)
 
 	backendEncrypt.SetPublicKey(backend.GetPublicKey())
+
 	backendEncrypt.SetCipher(backend.GetCipher())
 	backendEncrypt.Add(10)
 	backendEncrypt.Multiply(20)
