@@ -58,8 +58,8 @@ func (b ArithmeticBackend) GenerateKeys() {
 	C.GenerateArithmeticBackendKeys(b.backend)
 }
 
-func (b ArithmeticBackend) GetPublicKey() bytes {
-	var publicKey bytes
+func (b ArithmeticBackend) GetPublicKey() blob {
+	var publicKey blob
 	csPublicKey := C.GetArithmeticBackendPublicKey(b.backend)
 	defer C.free(unsafe.Pointer(csPublicKey.content))
 
@@ -69,8 +69,8 @@ func (b ArithmeticBackend) GetPublicKey() bytes {
 	return publicKey
 }
 
-func (b ArithmeticBackend) GetSecretKey() bytes {
-	var secretKey bytes
+func (b ArithmeticBackend) GetSecretKey() blob {
+	var secretKey blob
 	csSecretKey := C.GetArithmeticBackendSecretKey(b.backend)
 	defer C.free(unsafe.Pointer(csSecretKey.content))
 
@@ -80,16 +80,16 @@ func (b ArithmeticBackend) GetSecretKey() bytes {
 	return secretKey
 }
 
-func (b ArithmeticBackend) SetPublicKey(publicKey bytes) {
-	C.SetArithmeticBackendPublicKey(b.backend, *((*C.struct_byte_array_t)(unsafe.Pointer(&publicKey))))
+func (b ArithmeticBackend) SetPublicKey(publicKey blob) {
+	C.SetArithmeticBackendPublicKey(b.backend, *((*C.struct_blob_t)(unsafe.Pointer(&publicKey))))
 }
 
-func (b ArithmeticBackend) SetSecretKey(secretKey bytes) {
-	C.SetArithmeticBackendPublicKey(b.backend, *((*C.struct_byte_array_t)(unsafe.Pointer(&secretKey))))
+func (b ArithmeticBackend) SetSecretKey(secretKey blob) {
+	C.SetArithmeticBackendPublicKey(b.backend, *((*C.struct_blob_t)(unsafe.Pointer(&secretKey))))
 }
 
-func (b ArithmeticBackend) GetCipher() bytes {
-	var cipher bytes
+func (b ArithmeticBackend) GetCipher() blob {
+	var cipher blob
 	csCipher := C.GetArithmeticBackendCipher(b.backend)
 	defer C.free(unsafe.Pointer(csCipher.content))
 
@@ -99,8 +99,8 @@ func (b ArithmeticBackend) GetCipher() bytes {
 	return cipher
 }
 
-func (b ArithmeticBackend) SetCipher(cipher bytes) {
-	C.SetArithmeticBackendCipher(b.backend, *((*C.struct_byte_array_t)(unsafe.Pointer(&cipher))))
+func (b ArithmeticBackend) SetCipher(cipher blob) {
+	C.SetArithmeticBackendCipher(b.backend, *((*C.struct_blob_t)(unsafe.Pointer(&cipher))))
 }
 
 func (b ArithmeticBackend) Encrypt(value int) {

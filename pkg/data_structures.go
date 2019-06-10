@@ -1,6 +1,6 @@
 package homomorphine
 
-type bytes struct {
+type blob struct {
 	content []byte
 	size    int64
 }
